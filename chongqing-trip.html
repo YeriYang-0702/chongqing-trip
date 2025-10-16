@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>충칭 3박4일 여행: 코스 · 맛집 · 예산</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<style>
+  :root{--bg:#0b0c10;--card:#12131a;--muted:#aab1b8;--text:#f5f7fa;--accent:#ff4d4f;--accent2:#5c7cff;--border:#242633;--ok:#15c27a;}
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(140deg,#0b0c10,#111723 70%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Pretendard,Noto Sans KR,sans-serif;line-height:1.55;}
+  header{position:sticky;top:0;z-index:50;background:#0d1117dd;backdrop-filter:blur(6px);padding:.8rem 1rem;border-bottom:1px solid var(--border)}
+  .container{max-width:1100px;margin:0 auto;padding:1rem}
+  h1{font-size:1.4rem;margin:.2rem 0}
+  .sub{color:var(--muted);font-size:.9rem}
+  .grid{display:grid;gap:1rem}
+  @media(min-width:900px){.grid-2{grid-template-columns:1.2fr .8fr}.grid-3{grid-template-columns:repeat(3,1fr)}}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1rem}
+  .btn{display:inline-block;background:var(--accent);color:#fff;padding:.6rem .9rem;border-radius:10px;text-decoration:none;font-weight:600}
+  #map{height:470px;border-radius:14px;border:1px solid var(--border)}
+  table{width:100%;border-collapse:collapse}
+  thead th{background:#191c27;color:#cfd6dd}
+  th,td{border:1px solid var(--border);padding:.7rem;vertical-align:top}
+  tbody tr:nth-child(odd){background:#141821}
+  .price{font-variant-numeric:tabular-nums}
+  .muted{color:var(--muted)}
+  .section-title{display:flex;align-items:center;gap:.6rem;margin:.2rem 0 .6rem}
+  .section-title .dot{width:10px;height:10px;border-radius:50%;background:var(--accent)}
+  .pill{border:1px solid var(--border);border-radius:8px;padding:.25rem .5rem;background:#151826;color:#cbd2d9;font-size:.82rem}
+  .ok{color:var(--ok)}
+</style>
+</head>
+<body>
+<header class="container">
+  <h1>충칭 3박 4일 여행 플래너</h1>
+  <div class="sub">코스 지도 · 일정표 · 맛집 리스트 · 2인 예상 경비 (11/6~11/9)</div>
+</header>
+
+<main class="container grid grid-2">
+  <section class="card">
+    <div class="section-title"><span class="dot"></span><h2 style="margin:0">코스 지도 (마커 클릭)</h2></div>
+    <div id="map"></div>
+    <p class="muted" style="margin-top:.7rem">
+      레이어 버튼으로 <b>Day1/Day2/Day3</b> 동선을 on/off. 색상:
+      <span class="pill">Day1 빨강</span>
+      <span class="pill" style="background:#172033;border-color:#222;">Day2 보라</span>
+      <span class="pill" style="background:#12251a;border-color:#1d3;">Day3 초록</span>
+    </p>
+  </section>
+
+  <aside class="card">
+    <div class="section-title"><span class="dot"></span><h2 style="margin:0">여행 개요</h2></div>
+    <ul>
+      <li>인원: 20대 여성 2명</li>
+      <li>항공: 11/6 인천 14:00 → 충칭 16:55 / 11/9 충칭 08:30 → 인천 13:00</li>
+      <li>숙소: <b>Mcsrh 호텔 (차오텐먼)</b> — 홍야동/해방비/유람선 도보권</li>
+      <li>테마: 야경, 왕홍 스팟, 역사, 카페, 훠궈·마라 맛집</li>
+    </ul>
+    <a class="btn" href="#budget">바로가기: 예상 경비</a>
+  </aside>
+</main>
+
+<section class="container card">
+  <div class="section-title"><span class="dot"></span><h2 style="margin:0">상세 일정표 (동선 반영)</h2></div>
+  <table>
+    <thead><tr><th>DAY</th><th>시간</th><th>코스 · 메모</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>Day 1 · 목 (11/6)</b><br><span class="muted">도착 & 야경</span></td>
+        <td>17:30–23:30</td>
+        <td>입국 → <b>공항 택시스팟</b> 사진 → 체크인(차오텐먼) →
+            <b>홍야동 야경</b> & 왕홍거리 →
+            <b>저녁: 훠궈</b>(숙소 근처) → 야시장 스낵</td>
+      </tr>
+      <tr>
+        <td><b>Day 2 · 금 (11/7)</b><br><span class="muted">역사 + 카페뷰</span></td>
+        <td>09:00–22:00</td>
+        <td><b>대한민국 임시정부청사</b> → 점심(로컬) →
+            <b>리즈바역</b> 포토존 →
+            <b>후바오공원 Swimin Coffee</b> 휴식/사진 →
+            맞은편 뷰카페(Train View/KUMO) → 마사지/자유</td>
+      </tr>
+      <tr>
+        <td><b>Day 3 · 토 (11/8)</b><br><span class="muted">도심 + 유람선</span></td>
+        <td>09:30–23:00</td>
+        <td><b>해방비</b> 쇼핑 → <b>십팔제</b> 간식 →
+            <b>엘링공원</b> 전망 →
+            <b>거싸지아 고기집</b>(이른 저녁, 차오텐먼/해방비권) →
+            <b>양자강 유람선</b>(차오텐먼 부두)</td>
+      </tr>
+      <tr>
+        <td><b>Day 4 · 일 (11/9)</b><br><span class="muted">귀국</span></td>
+        <td>05:30–13:00</td>
+        <td>호텔 출발 → 공항(택시) → 08:30 출발 / 13:00 인천 도착</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="container grid grid-2">
+  <div class="card">
+    <div class="section-title"><span class="dot"></span><h2 style="margin:0">충칭 훠궈 맛집</h2></div>
+    <ul>
+      <li><b>周师兄火锅 (저우스슝)</b> — 해방비점, 진한 마라</li>
+      <li><b>德庄火锅 (더좡)</b> — 차오텐먼점(숙소 근처)</li>
+      <li><b>刘一手火锅 (류이서)</b> — 홍야동 인근, 맵기 조절</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="section-title"><span class="dot"></span><h2 style="margin:0">마라/로컬 간식</h2></div>
+    <ul>
+      <li><b>好又来串串香</b> — 꼬치마라탕(츄안츄안)</li>
+      <li><b>李记串串香</b> — 가성비</li>
+      <li><b>山城小汤圆</b> — 야시장 디저트탕/탕후루</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="section-title"><span class="dot"></span><h2 style="margin:0">디저트 · 음료</h2></div>
+    <ul>
+      <li><b>茶颜悦色</b> — 우롱 밀크티/복숭아 라떼</li>
+      <li><b>奈雪の茶 (Nayuki)</b> — 프루트티 + 브레드</li>
+      <li><b>幸福堂</b> — 흑당 버블티</li>
+      <li><b>十八街麻花 / 陈麻花</b> — 충칭식 마화(선물용)</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="section-title"><span class="dot"></span><h2 style="margin:0">핫한 카페</h2></div>
+    <ul>
+      <li><b>KUMO Cafe</b> — 화이트톤 감성, 리즈바뷰</li>
+      <li><b>Train View Cafe</b> — 창밖 모노레일 통과</li>
+      <li><b>Swimin Coffee (후바오공원점)</b> — 공원 산책+사진</li>
+      <li><b>The Bridge / Riverside</b> — 강변/야경 무드</li>
+      <li><b>Seesaw Coffee</b> — 해방비 몰 브런치</li>
+    </ul>
+  </div>
+</section>
+
+<section id="budget" class="container card">
+  <div class="section-title"><span class="dot"></span><h2 style="margin:0">예상 경비 (2인 기준 · CNY)</h2></div>
+  <p class="muted">전제: <b>1일 1외식 + 1카페</b> 포함, 동선 최적. 택시는 공항 왕복, 시내는 지하철/도보 위주.</p>
+  <table>
+    <thead><tr><th>항목</th><th>수량/메모</th><th class="price">금액(2인)</th></tr></thead>
+    <tbody>
+      <tr><td>공항↔도심 택시</td><td>왕복</td><td class="price">≈ 240</td></tr>
+      <tr><td>Day1 식사</td><td>저녁 훠궈 + 디저트/카페</td><td class="price">≈ 260</td></tr>
+      <tr><td>Day2 식사</td><td>점심 로컬 + 카페(후바오 포함)</td><td class="price">≈ 190</td></tr>
+      <tr><td>Day3 식사</td><td>간식 + <b>거싸지아 고기집</b> + 카페</td><td class="price">≈ 320</td></tr>
+      <tr><td>유람선(야경)</td><td>차오텐먼 보통석 2인</td><td class="price">≈ 200</td></tr>
+      <tr><td>시내 교통</td><td>지하철/버스(3일)</td><td class="price">≈ 70</td></tr>
+      <tr><td>기타</td><td>물·스낵·소액 입장료</td><td class="price">≈ 50</td></tr>
+      <tr><th colspan="2">합계(2인)</th><th class="price">≈ <span class="ok">1,330 CNY</span> (±15%)</th></tr>
+      <tr><td colspan="3" class="muted">대략 1인 ≈ 665 CNY. 좌석/식당 등급·환율에 따라 변동.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<footer class="container" style="padding-bottom:3rem;color:var(--muted)">
+  Tip: Day3 유람선은 주말 피크(19~21시). <b>거싸지아</b>는 17:00 전후 이른 저녁으로 가면 대기 단축 → 바로 부두 이동 동선 깔끔!
+</footer>
+
+<script>
+  const map = L.map('map',{scrollWheelZoom:true}).setView([29.5657,106.582],14);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
+  const icon = (color)=>L.divIcon({html:`<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12S3 17 3 10a9 9 0 1 1 18 0Z"/><circle cx="12" cy="10" r="3" fill="${color}"/></svg>`,className:"",iconSize:[26,26],iconAnchor:[13,26]});
+
+  // 좌표(근사)
+  const spots = {
+    hotel:{name:"Mcsrh 호텔(차오텐먼)",pos:[29.5692,106.5879]},
+    hongyadong:{name:"홍야동",pos:[29.5647,106.5851]},
+    liziba:{name:"리즈바역",pos:[29.5641,106.5577]},
+    jiefangbei:{name:"해방비(쇼핑거리)",pos:[29.5637,106.5784]},
+    eling:{name:"엘링공원 전망대",pos:[29.5577,106.5507]},
+    chaotianmen:{name:"차오텐먼 유람선 부두",pos:[29.5665,106.5869]},
+    // 추가
+    swimin:{name:"후바오공원 Swimin Coffee",pos:[29.5599,106.5449]}, // 엘링/리즈바 사이 공원권 근사
+    gesajia:{name:"거싸지아 고기집(바비큐)",pos:[29.5652,106.5835]}, // 해방비/차오텐먼 사이 근사
+    // 맛집/카페(대표)
+    zhou:{name:"周师兄火锅(해방비)",pos:[29.5629,106.5797]},
+    dezhuang:{name:"德庄火锅(차오텐먼)",pos:[29.5685,106.5860]},
+    liuyishou:{name:"刘一手火锅(홍야동)",pos:[29.5655,106.5838]},
+    haoyoulai:{name:"好又来串串香",pos:[29.5638,106.5765]},
+    nayuki:{name:"奈雪の茶",pos:[29.5640,106.5789]},
+    chayan:{name:"茶颜悦色",pos:[29.5636,106.5806]},
+    kumo:{name:"KUMO Cafe",pos:[29.5648,106.5566]},
+    trainview:{name:"Train View Cafe",pos:[29.5646,106.5560]}
+  };
+
+  const day1=L.layerGroup(), day2=L.layerGroup(), day3=L.layerGroup(), eats=L.layerGroup();
+
+  // Day1: 호텔 → 홍야동 → (근처 카페/바) → 호텔
+  [spots.hotel,spots.hongyadong].forEach(s=>L.marker(s.pos,{icon:icon('#ff4d4f')}).addTo(day1).bindPopup(`<b>Day1</b><br>${s.name}`));
+  L.polyline([spots.hotel.pos,spots.hongyadong.pos,spots.hotel.pos],{color:'#ff4d4f'}).addTo(day1);
+
+  // Day2: 임시정부청사(해방비 근처) → 리즈바 → 후바오공원 Swimin → KUMO/Train View
+  const imsiGov=[29.5650,106.5792];
+  L.marker(imsiGov,{icon:icon('#7c5cff')}).addTo(day2).bindPopup('<b>Day2</b><br>대한민국 임시정부청사(근처)');
+  [spots.liziba,spots.swimin,spots.kumo,spots.trainview].forEach(s=>L.marker(s.pos,{icon:icon('#7c5cff')}).addTo(day2).bindPopup(`<b>Day2</b><br>${s.name}`));
+  L.polyline([imsiGov,spots.liziba.pos,spots.swimin.pos,spots.kumo.pos,spots.trainview.pos],{color:'#7c5cff'}).addTo(day2);
+
+  // Day3: 해방비 → 십팔제(근처 간식) → 엘링 → 거싸지아 → 차오텐먼
+  [spots.jiefangbei,spots.eling,spots.gesajia,spots.chaotianmen].forEach(s=>L.marker(s.pos,{icon:icon('#18c37a')}).addTo(day3).bindPopup(`<b>Day3</b><br>${s.name}`));
+  // 십팔제는 해방비 인근 간식골목으로 jiefangbei 위치 사용
+  L.polyline([spots.jiefangbei.pos,spots.eling.pos,spots.gesajia.pos,spots.chaotianmen.pos],{color:'#18c37a'}).addTo(day3);
+
+  // 맛집/카페 참고 레이어
+  [spots.zhou,spots.dezhuang,spots.liuyishou,spots.haoyoulai,spots.nayuki,spots.chayan].forEach(s=>{
+    L.marker(s.pos,{icon:icon('#f0b90b')}).addTo(eats).bindPopup(`<b>추천</b><br>${s.name}`);
+  });
+
+  L.control.layers({},{"Day1 코스":day1,"Day2 코스":day2,"Day3 코스":day3,"맛집/카페":eats},{collapsed:false}).addTo(map);
+  day1.addTo(map);day2.addTo(map);day3.addTo(map);eats.addTo(map);
+  const all=L.featureGroup([day1,day2,day3,eats]); map.fitBounds(all.getBounds(),{padding:[20,20]});
+</script>
+</body>
+</html>
